@@ -1,4 +1,5 @@
 using System;
+using Smartwyre.DeveloperTest.Services;
 using Xunit;
 
 namespace Smartwyre.DeveloperTest.Tests
@@ -6,9 +7,17 @@ namespace Smartwyre.DeveloperTest.Tests
     public class PaymentServiceTests
     {
         [Fact]
-        public void Test1()
+        public void PaymentService_ConstructorPassedNoDataStore_ThrowsArgumentNull()
         {
-            throw new NotImplementedException();
+            // Arrange
+    
+            // Act
+            Action act = () => new PaymentService(null);
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(act);
         }
+
+        
     }
 }
