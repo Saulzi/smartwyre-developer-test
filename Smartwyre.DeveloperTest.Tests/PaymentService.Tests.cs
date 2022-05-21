@@ -4,6 +4,7 @@ using Smartwyre.DeveloperTest.Data;
 using Smartwyre.DeveloperTest.Services;
 using Xunit;
 using FluentAssertions;
+using Smartwyre.DeveloperTest.Types;
 
 namespace Smartwyre.DeveloperTest.Tests
 {
@@ -15,7 +16,7 @@ namespace Smartwyre.DeveloperTest.Tests
             // Arrange
     
             // Act
-            Action act = () => new PaymentService(null, new IPaymentScheme[0]);
+            Action act = () => new PaymentService(null);
 
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("accountDataStore");
@@ -28,11 +29,41 @@ namespace Smartwyre.DeveloperTest.Tests
             var fake = A.Fake<IAccountDataStore>();
 
             // Act
-            Action act = () => new PaymentService(fake, new IPaymentScheme[0]);
+            Action act = () => new PaymentService(fake);
 
             // Assert
             act.Should().NotThrow();
         }
+
+        [Theory()]
+        [InlineData(PaymentScheme.AutomatedPaymentSystem)]
+        [InlineData(PaymentScheme.BankToBankTransfer)]
+        [InlineData(PaymentScheme.ExpeditedPayments)]
+        [InlineData((IPaymentScheme)null)]  // For now this one raises warning
+        public void PaymentService_AccontInvalid_ReturnsFalse(PaymentScheme paymentScheme)
+        {
+            // Arrange
+            var accounts = A.Fake<IAccountDataStore>();
+            A.CallTo(() => accounts.GetAccount("1234"))
+             .Returns(null);
+
+            var itemUnderTest = new PaymentService(accounts);
+            
+            var request = new MakePaymentRequest() {
+                Amount = 1,
+                CreditorAccountNumber = "AAA",
+                DebtorAccountNumber = "BBB",
+                PaymentScheme = paymentScheme
+            };
+
+            // Act
+            var result = itemUnderTest.MakePayment(request);
+
+            // Assert
+            result.Success.Should().BeFalse(); 
+        }
+
+        
 
       
     }

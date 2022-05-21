@@ -10,9 +10,13 @@ namespace Smartwyre.DeveloperTest.Services
     public class PaymentService : IPaymentService
     {
         private IAccountDataStore _accountDataStore;
-        private IReadOnlyList<IPaymentScheme> _paymentSchemes;
+        private static IReadOnlyList<IPaymentScheme> _paymentSchemes = new IPaymentScheme[] {
+            new AutomatedPaymentSystem(),
+            new BankToBankTransfer(),
+            new ExpeditedPayments()
+        };
 
-        public PaymentService(IAccountDataStore accountDataStore, IReadOnlyList<IPaymentScheme> paymentSchemes)
+        public PaymentService(IAccountDataStore accountDataStore)
         {
             _accountDataStore = accountDataStore ?? throw new ArgumentNullException(nameof(accountDataStore));
         }
