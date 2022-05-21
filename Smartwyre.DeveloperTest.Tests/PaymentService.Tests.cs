@@ -15,7 +15,7 @@ namespace Smartwyre.DeveloperTest.Tests
             // Arrange
     
             // Act
-            Action act = () => new PaymentService(null);
+            Action act = () => new PaymentService(null, new IPaymentScheme[0]);
 
             // Assert
             act.Should().Throw<ArgumentNullException>().WithParameterName("accountDataStore");
@@ -28,10 +28,12 @@ namespace Smartwyre.DeveloperTest.Tests
             var fake = A.Fake<IAccountDataStore>();
 
             // Act
-            Action act = () => new PaymentService(fake);
+            Action act = () => new PaymentService(fake, new IPaymentScheme[0]);
 
             // Assert
             act.Should().NotThrow();
-        }        
+        }
+
+      
     }
 }
