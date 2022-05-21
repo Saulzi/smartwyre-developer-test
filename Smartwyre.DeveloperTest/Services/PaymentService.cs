@@ -22,12 +22,17 @@ namespace Smartwyre.DeveloperTest.Services
             _accountDataStore = accountDataStore ?? throw new ArgumentNullException(nameof(accountDataStore));
         }
 
+        private bool GetIsPaymentAllowed(MakePaymentRequest request, Account account)
+        {
+            var paymentScheme =  _paymentSchemes.FirstOrDefault(f=>f.Type == request.PaymentScheme);
+            return paymentScheme != null && paymentScheme.IsValid(account, request);
+        }
+
         public MakePaymentResult MakePayment(MakePaymentRequest request)
         {
-            Account account = _accountDataStore.GetAccount(request.DebtorAccountNumber);
+            var account = _accountDataStore.GetAccount(request.DebtorAccountNumber);
 
-            var paymentScheme =  _paymentSchemes.FirstOrDefault(f=>f.Type == request.PaymentScheme);
-            var isPaymentAllowed = paymentScheme != null && paymentScheme.IsValid(account, request);
+            var isPaymentAllowed = GetIsPaymentAllowed(request, account);
             
             if (isPaymentAllowed)
             {

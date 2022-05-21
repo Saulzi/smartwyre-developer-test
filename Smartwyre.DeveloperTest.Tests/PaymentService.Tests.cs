@@ -44,15 +44,15 @@ namespace Smartwyre.DeveloperTest.Tests
         {
             // Arrange
             var accounts = A.Fake<IAccountDataStore>();
-            A.CallTo(() => accounts.GetAccount("1234"))
+            A.CallTo(() => accounts.GetAccount("AAA"))
              .Returns(null);
 
             var itemUnderTest = new PaymentService(accounts);
             
             var request = new MakePaymentRequest() {
                 Amount = 1,
-                CreditorAccountNumber = "AAA",
-                DebtorAccountNumber = "BBB",
+                CreditorAccountNumber = "BBB",
+                DebtorAccountNumber = "AAA",
                 PaymentScheme = paymentScheme
             };
 
@@ -63,8 +63,37 @@ namespace Smartwyre.DeveloperTest.Tests
             result.Success.Should().BeFalse(); 
         }
 
-        
+        [Fact]
+        public void PaymentService_ValidBankToBank_ReturnsTrueAndReducesValue()
+        {
+            // Arrange
+            var account = new Account()
+            {
+                AccountNumber = "AAA",
+                Balance = 100,
+                AllowedPaymentSchemes =AllowedPaymentSchemes.BankToBankTransfer | AllowedPaymentSchemes.ExpeditedPayments
+            };
 
-      
+            var accounts = A.Fake<IAccountDataStore>();
+            A.CallTo(() => accounts.GetAccount("AAA"))
+             .Returns(account);
+
+            var itemUnderTest = new PaymentService(accounts);
+            
+            var request = new MakePaymentRequest() {
+                Amount = 1,
+                CreditorAccountNumber = "BBB",
+                DebtorAccountNumber = "AAA",
+                PaymentScheme = PaymentScheme.BankToBankTransfer
+            };
+
+            // Act
+            var result = itemUnderTest.MakePayment(request);
+
+            // Assert
+            result.Success.Should().BeTrue();
+            account.Balance.Should().Be(99);
+            A.CallTo(() => accounts.UpdateAccount(account)).MustHaveHappened(); 
+        }      
     }
 }
