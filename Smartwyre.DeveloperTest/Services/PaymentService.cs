@@ -10,6 +10,7 @@ namespace Smartwyre.DeveloperTest.Services
     public class PaymentService : IPaymentService
     {
         private IAccountDataStore _accountDataStore;
+        
         private static IReadOnlyList<IPaymentScheme> _paymentSchemes = new IPaymentScheme[] {
             new AutomatedPaymentSystem(),
             new BankToBankTransfer(),
@@ -24,26 +25,19 @@ namespace Smartwyre.DeveloperTest.Services
         public MakePaymentResult MakePayment(MakePaymentRequest request)
         {
             Account account = _accountDataStore.GetAccount(request.DebtorAccountNumber);
-            
-            var result = new MakePaymentResult();
-
-            switch (request.PaymentScheme)
-            {
-                case PaymentScheme.BankToBankTransfer:
-                    break;
-            }
 
             var paymentScheme =  _paymentSchemes.FirstOrDefault(f=>f.Type == request.PaymentScheme);
-            result.Success = paymentScheme != null && paymentScheme.IsValid(account, request);
+            var isPaymentAllowed = paymentScheme != null && paymentScheme.IsValid(account, request);
             
-            if (result.Success)
+            if (isPaymentAllowed)
             {
                 account.Balance -= request.Amount;
-
                 _accountDataStore.UpdateAccount(account);
             }
 
-            return result;
+            return new MakePaymentResult() {
+                Success = isPaymentAllowed
+            };
         }
     }
 }
