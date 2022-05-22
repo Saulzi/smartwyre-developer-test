@@ -10,8 +10,8 @@ namespace Smartwyre.DeveloperTest.Types
 
         public decimal Amount { get; set; }
 
-        public DateTime PaymentDate { get; set; }
+        public DateTimeOffset PaymentDate { get; set; }
 
-        public PaymentScheme PaymentScheme { get; set; }
+        public PaymentSchemeType PaymentScheme { get; set; }
     }
 }

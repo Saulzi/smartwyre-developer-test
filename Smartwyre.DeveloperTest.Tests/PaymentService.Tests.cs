@@ -36,11 +36,10 @@ namespace Smartwyre.DeveloperTest.Tests
         }
 
         [Theory()]
-        [InlineData(PaymentScheme.AutomatedPaymentSystem)]
-        [InlineData(PaymentScheme.BankToBankTransfer)]
-        [InlineData(PaymentScheme.ExpeditedPayments)]
-        [InlineData((IPaymentScheme)null)]  // For now this one raises warning
-        public void PaymentService_AccontInvalid_ReturnsFalse(PaymentScheme paymentScheme)
+        [InlineData(PaymentSchemeType.AutomatedPaymentSystem)]
+        [InlineData(PaymentSchemeType.BankToBankTransfer)]
+        [InlineData(PaymentSchemeType.ExpeditedPayments)]
+        public void PaymentService_AccontInvalid_ReturnsFalse(PaymentSchemeType paymentScheme)
         {
             // Arrange
             var accounts = A.Fake<IAccountDataStore>();
@@ -84,7 +83,7 @@ namespace Smartwyre.DeveloperTest.Tests
                 Amount = 1,
                 CreditorAccountNumber = "BBB",
                 DebtorAccountNumber = "AAA",
-                PaymentScheme = PaymentScheme.BankToBankTransfer
+                PaymentScheme = PaymentSchemeType.BankToBankTransfer
             };
 
             // Act

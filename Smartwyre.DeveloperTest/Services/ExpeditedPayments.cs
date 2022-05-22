@@ -2,11 +2,11 @@ using Smartwyre.DeveloperTest.Types;
 
 namespace Smartwyre.DeveloperTest.Services;
 
-public class ExpeditedPayments : IPaymentScheme
+public class ExpeditedPayments : PaymentScheme
 {
-    public PaymentScheme Type => PaymentScheme.ExpeditedPayments;
+    public override PaymentSchemeType Type => PaymentSchemeType.ExpeditedPayments;
 
-    public bool IsValid(Account account, MakePaymentRequest request)
+    public override bool IsPaymentAllowed(Account account, MakePaymentRequest request)
     {
         return account != null &&
                           account.AllowedPaymentSchemes.HasFlag(AllowedPaymentSchemes.ExpeditedPayments) &&

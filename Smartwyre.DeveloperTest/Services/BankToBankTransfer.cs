@@ -2,10 +2,10 @@ using Smartwyre.DeveloperTest.Types;
 
 namespace Smartwyre.DeveloperTest.Services;
 
-public class BankToBankTransfer : IPaymentScheme
+public class BankToBankTransfer : PaymentScheme
 {
-    public PaymentScheme Type => PaymentScheme.BankToBankTransfer;
+    public override PaymentSchemeType Type => PaymentSchemeType.BankToBankTransfer;
 
-    public bool IsValid(Account account, MakePaymentRequest _) => account != null 
-                                                               && account.AllowedPaymentSchemes.HasFlag(AllowedPaymentSchemes.BankToBankTransfer);
+    public override bool IsPaymentAllowed(Account account, MakePaymentRequest _) => account != null 
+                                                                        && account.AllowedPaymentSchemes.HasFlag(AllowedPaymentSchemes.BankToBankTransfer);
 }

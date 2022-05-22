@@ -1,6 +1,6 @@
 ﻿namespace Smartwyre.DeveloperTest.Types
 {
-    public enum PaymentScheme
+    public enum PaymentSchemeType
     {
         ExpeditedPayments,
         BankToBankTransfer,

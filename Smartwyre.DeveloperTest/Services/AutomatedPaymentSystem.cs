@@ -2,11 +2,11 @@ using Smartwyre.DeveloperTest.Types;
 
 namespace Smartwyre.DeveloperTest.Services;
 
-public class AutomatedPaymentSystem : IPaymentScheme
+public class AutomatedPaymentSystem : PaymentScheme
 {
-    public PaymentScheme Type => PaymentScheme.AutomatedPaymentSystem;
+    public override PaymentSchemeType Type => PaymentSchemeType.AutomatedPaymentSystem;
 
-    public bool IsValid(Account account, MakePaymentRequest _) => account != null && 
-                                            account.AllowedPaymentSchemes.HasFlag(AllowedPaymentSchemes.AutomatedPaymentSystem) &&
-                                            account.Status == AccountStatus.Live;
+    public override bool IsPaymentAllowed(Account account, MakePaymentRequest _) => account != null && 
+                                                                           account.AllowedPaymentSchemes.HasFlag(AllowedPaymentSchemes.AutomatedPaymentSystem) &&
+                                                                           account.Status == AccountStatus.Live;
 }
